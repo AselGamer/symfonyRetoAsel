@@ -23,6 +23,7 @@ doctrine:
         dql:
            string_functions:
                binary: DoctrineExtensions\Query\Mysql\Binary
+               group_concat: DoctrineExtensions\Query\Mysql\GroupConcat
 
 when@test:
     doctrine:

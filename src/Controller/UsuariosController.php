@@ -73,7 +73,7 @@ class UsuariosController extends AbstractController
 
         $this->entityManager->flush();
 
-        return new JsonResponse(['res' => 'Alumno Actualizado', 'data' => $datos], JsonResponse::HTTP_ACCEPTED);
+        return new JsonResponse(['res' => 'Alumno Actualizado', 'data' => json_encode($usuario)], JsonResponse::HTTP_ACCEPTED);
     }
 
     
@@ -91,9 +91,26 @@ class UsuariosController extends AbstractController
     {
         $datos = json_decode($request->getContent(), true);
 
-        $query = $this->entityManager->getRepository(Usuario::class)->getCursosUsuarioLevel($datos['idUsuario'], $datos['admin']);
+        if($datos['admin'] == 0)
+        {
+            $query = $this->entityManager->getRepository(Usuario::class)->getCursosUsuarioLevel($datos['idUsuario']);
+        } else
+        {
+            $query = $this->entityManager->getRepository(Usuario::class)->getAllUsuariosCursos();
+        }
+        
 
         return $this->convertToJson($query);
+    }
+
+    #[Route('/usuarios/{id}', name: 'app_usuarios_id', methods:['GET'])]
+    public function get_usuario_id($id): JsonResponse
+    {
+        $datos = $this->entityManager->getRepository(Usuario::class)->find($id);
+
+        $json = $this->convertToJson($datos);
+
+        return $json;
     }
 
     private function convertToJson($object): JsonResponse

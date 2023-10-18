@@ -28,13 +28,8 @@ class UsuariosRepository extends ServiceEntityRepository
         return $query->execute()[0];
     }
 
-    public function getCursosUsuarioLevel(int $id, int $admin)
+    public function getCursosUsuarioLevel(int $id)
     {
-        $qb = $this->getEntityManager()->getRepository(Curso::class)->createQueryBuilder('C1');
-
-
-        if($admin == 0)
-        {
             $query = $this->getEntityManager()->createQuery('SELECT c.nombre AS nombreCurso , u.nombre, cu.nota, cu.idusuariocurso FROM App\Entity\Usuariocurso cu JOIN cu.idcurso c JOIN cu.idusuario u WHERE u.idusuario = :id')->setParameter('id', $id);
             /*
             $qb
@@ -46,15 +41,14 @@ class UsuariosRepository extends ServiceEntityRepository
             ->setParameter('id_usuario', $id)
             ->getQuery();
             */
-        } else
-        {
-            $query =
-            $qb
-            ->select('c')
-            ->from('Curso', 'c')
-            ->getQuery();
-        }
         
+
+        return $query->execute();
+    }
+
+    public function getAllUsuariosCursos()
+    {
+        $query = $this->getEntityManager()->createQuery('SELECT c.nombre AS nombreCurso, GROUP_CONCAT(u.nombre) AS usuarios, GROUP_CONCAT(cu.nota) AS notas FROM App\Entity\Usuariocurso cu JOIN cu.idcurso c JOIN cu.idusuario u GROUP BY c.nombre ORDER BY c.nombre');
 
         return $query->execute();
     }
