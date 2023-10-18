@@ -86,6 +86,16 @@ class UsuariosController extends AbstractController
         return $this->convertToJson($usuario);
     }
 
+    #[Route('/usuarios/curso', name: 'app_usuarios_curso', methods:['POST'])]
+    public function cursoUsuario(Request $request): JsonResponse
+    {
+        $datos = json_decode($request->getContent(), true);
+
+        $query = $this->entityManager->getRepository(Usuario::class)->getCursosUsuarioLevel($datos['idUsuario'], $datos['admin']);
+
+        return $this->convertToJson($query);
+    }
+
     private function convertToJson($object): JsonResponse
     {
         $encoders = [new XmlEncoder(), new JsonEncoder()];
