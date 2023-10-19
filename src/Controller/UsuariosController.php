@@ -113,6 +113,25 @@ class UsuariosController extends AbstractController
         return $json;
     }
 
+    #[Route('/usuarios/curso/add', name: 'app_usuarios_curso_add', methods:['POST'])]
+    public function insertUsuarioCurso(Request $request): JsonResponse
+    {
+        $datos = json_decode($request->getContent(), true);
+
+        $usuario = $this->entityManager->getRepository(Usuario::class)->find($datos['idUsuario']);
+        $curso = $this->entityManager->getRepository(Curso::class)->find($datos['idCurso']);
+
+        $usuarioCurso = new Usuariocurso();
+        $usuarioCurso->setIdusuario($usuario);
+        $usuarioCurso->setIdcurso($curso);
+        $usuarioCurso->setNota($datos['nota']);
+
+        $this->entityManager->persist($usuarioCurso);
+        $this->entityManager->flush();
+
+        return new JsonResponse(['data' => 'Relacion Creada'], JsonResponse::HTTP_CREATED);
+    }
+
     private function convertToJson($object): JsonResponse
     {
         $encoders = [new XmlEncoder(), new JsonEncoder()];

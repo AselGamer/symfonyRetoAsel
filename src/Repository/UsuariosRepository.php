@@ -53,4 +53,11 @@ class UsuariosRepository extends ServiceEntityRepository
         return $query->execute();
     }
 
+    public function doesUserExist(Usuario $user)
+    {
+        $query = $this->getEntityManager()->createQuery("SELECT a1 FROM App\Entity\Usuario a1 WHERE a1.idusuario = :idusuario")->setParameter('idusuario', $user->getIdusuario());
+
+        return $query->execute();
+    }
+
 }
